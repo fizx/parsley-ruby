@@ -10,15 +10,14 @@ Download Parsley from http://github.com/fizx/parsley/tree/master following the i
 
 = Install parsley-ruby =
 
+From source:
+  sudo rake install
+
 From GitHub:
   Run the following if you haven't already:
   gem sources -a http://gems.github.com
   Install the gem:
   sudo gem install fizx-parsley-ruby
-
-From source:
-  gem build parsley-ruby.gemspec
-  sudo gem install parsley-ruby
 
 PARSLETS.COM INTEGRATION
 
@@ -27,5 +26,4 @@ We also recommend installing the free online_parselets rubygem in order to use o
   gem sources -a http://gems.github.com
   Install the gem:
   sudo gem install iterationlabs-online_parslets
-
 
