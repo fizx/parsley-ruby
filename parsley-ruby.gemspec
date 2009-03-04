@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
     ./lib/parsley.rb
     ./parsley-ruby.gemspec
     ./README
-    ./test/test_dexterous.rb
+    ./test/test_parsley.rb
     ./test/yelp-benchmark.rb
     ./test/yelp-home.html
     ./test/yelp-home.let
