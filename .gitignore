@@ -17,10 +17,10 @@ scanner.c
 libparsley.la
 parser.h
 test.log
-ruby/parsley*.gem
-ruby/ext/cparsley.bundle
-ruby/ext/cparsley.so
-ruby/ext/Makefile
-ruby/ext/conftest.dSYM/
+parsley*.gem
+ext/cparsley.bundle
+ext/cparsley.so
+ext/Makefile
+ext/conftest.dSYM/
 work
-ruby/ext/mkmf.log
+ext/mkmf.log

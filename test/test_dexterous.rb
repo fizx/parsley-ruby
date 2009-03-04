@@ -3,23 +3,25 @@ require File.dirname(__FILE__) + "/../lib/parsley"
 
 class TestParsley < Test::Unit::TestCase
   def setup
-    @file = File.dirname(__FILE__) + "/../../test/yelp.html"
+    @page = File.expand_path(File.dirname(__FILE__) + "/yelp.html")
+    @home = File.expand_path(File.dirname(__FILE__) + "/yelp-home.html")
+    @let  = File.expand_path(File.dirname(__FILE__) + "/yelp-home.let")
   end
   
   def test_yelp
-    @parsley = Parsley.new(File.read(File.dirname(__FILE__) + "/../../test/yelp-home.let"))
-    out = @parsley.parse(:file => File.dirname(__FILE__) + "/../../test/yelp-home.html")
+    @parsley = Parsley.new(File.read(@let))
+    out = @parsley.parse(:file => @home)
     assert_equal "/c/sf/shopping", out["categories"][0]["href"]
   end
   
   def test_yelp_xml
-    @parsley = Parsley.new(File.read(File.dirname(__FILE__) + "/../../test/yelp-home.let"))
-    out = @parsley.parse(:file => File.dirname(__FILE__) + "/../../test/yelp-home.html", :output => :xml)
+    @parsley = Parsley.new(File.read(@let))
+    out = @parsley.parse(:file => @home, :output => :xml)
   end
   
   def test_simple
     @parsley = Parsley.new("hi" => "h1")
-    assert_equal({"hi" => "Nick's Crispy Tacos"}, @parsley.parse(:file => @file))
+    assert_equal({"hi" => "Nick's Crispy Tacos"}, @parsley.parse(:file => @page))
   end
   
   def test_simple_string
@@ -30,12 +32,12 @@ class TestParsley < Test::Unit::TestCase
   def test_xml
     @parsley = Parsley.new("hi" => "h1")
     xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parslets.com/json\"><hi>Nick's Crispy Tacos</hi></parsley:root>\n"
-    assert_equal(xml, @parsley.parse(:file => @file, :output => :xml))
+    assert_equal(xml, @parsley.parse(:file => @page, :output => :xml))
   end
   
   def test_json
     @parsley = Parsley.new("hi" => "h1")
-    assert_equal('{ "hi": "Nick\'s Crispy Tacos" }', @parsley.parse(:file => @file, :output => :json))
+    assert_equal('{ "hi": "Nick\'s Crispy Tacos" }', @parsley.parse(:file => @page, :output => :json))
   end
   
   def test_rescuable_file_error
@@ -46,7 +48,7 @@ class TestParsley < Test::Unit::TestCase
   
   def test_array_string
     @parsley = Parsley.new({"foo" => ["li"]})
-    out = @parsley.parse(:file => @file)
+    out = @parsley.parse(:file => @page)
     assert_kind_of Hash, out
     assert_kind_of Array, out["foo"], out.inspect
     assert out["foo"].length > 1
