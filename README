@@ -1,0 +1,29 @@
+ABOUT
+
+Ruby bindings for Parsley.
+
+INSTALLATION
+
+= Get Parsley and Dependancies = 
+
+Download Parsley from http://github.com/fizx/parsley/tree/master following the installation directions located at http://github.com/fizx/parsley/blob/master/INSTALL
+
+= Install parsley-ruby =
+
+From source:
+  sudo rake install
+
+From GitHub:
+  Run the following if you haven't already:
+  gem sources -a http://gems.github.com
+  Install the gem:
+  sudo gem install fizx-parsley-ruby
+
+PARSLETS.COM INTEGRATION
+
+We also recommend installing the free online_parselets rubygem in order to use other people's parselets and to share your own:
+  Run the following if you haven't already:
+  gem sources -a http://gems.github.com
+  Install the gem:
+  sudo gem install iterationlabs-online_parslets
+
