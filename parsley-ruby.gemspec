@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "parsley-ruby"
-  s.version  = "0.1.0"
+  s.version  = "0.1.1"
   s.date     = "2008-08-10"
   s.summary  = "Ruby binding for parsley"
   s.email    = "kyle@kylemaxwell.com"
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
     ./test/yelp-home.html
     ./test/yelp-home.let
     ./test/yelp.html
-    
     ]
   s.rdoc_options = ["--main", "README"]
   s.extra_rdoc_files = ["README"]

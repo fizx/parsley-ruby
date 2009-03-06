@@ -17,6 +17,8 @@ task :configure do
 end
 
 task :install do 
+  system "gem uninstall fizx-parsley-ruby"
+  system "gem uninstall parsley-ruby"
   system "gem build parsley-ruby.gemspec"
   system "gem install parsley-ruby"
 end
