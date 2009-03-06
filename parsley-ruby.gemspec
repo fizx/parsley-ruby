@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "parsley-ruby"
-  s.version  = "0.1.1"
+  s.version  = "0.1.2"
   s.date     = "2008-08-10"
   s.summary  = "Ruby binding for parsley"
   s.email    = "kyle@kylemaxwell.com"
@@ -11,16 +11,16 @@ Gem::Specification.new do |s|
   s.extensions = "ext/extconf.rb"
   s.authors  = ["Kyle Maxwell"]
   s.files    = %w[
-    ./ext/cparsley.c
-    ./ext/extconf.rb
-    ./lib/parsley.rb
-    ./parsley-ruby.gemspec
-    ./README
-    ./test/test_parsley.rb
-    ./test/yelp-benchmark.rb
-    ./test/yelp-home.html
-    ./test/yelp-home.let
-    ./test/yelp.html
+    ext/cparsley.c
+    ext/extconf.rb
+    lib/parsley.rb
+    parsley-ruby.gemspec
+    README
+    test/test_parsley.rb
+    test/yelp-benchmark.rb
+    test/yelp-home.html
+    test/yelp-home.let
+    test/yelp.html
     ]
   s.rdoc_options = ["--main", "README"]
   s.extra_rdoc_files = ["README"]
