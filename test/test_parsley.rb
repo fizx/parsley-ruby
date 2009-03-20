@@ -19,6 +19,13 @@ class TestParsley < Test::Unit::TestCase
     out = @parsley.parse(:file => @home, :output => :xml)
   end
   
+  def test_broken
+    @parsley = Parsley.new("hi" => "no-ns:match(h1)")
+    assert_raises(ParsleyError) {
+      @parsley.parse(:file => @page)
+    }
+  end
+  
   def test_simple
     @parsley = Parsley.new("hi" => "h1")
     assert_equal({"hi" => "Nick's Crispy Tacos"}, @parsley.parse(:file => @page))
