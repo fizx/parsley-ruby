@@ -43,14 +43,14 @@ VALUE _new(VALUE self, VALUE parsley, VALUE incl){
 VALUE _parse_file(VALUE self, VALUE name, VALUE input, VALUE output){
 	parsleyPtr parsley;
 	Data_Get_Struct(self, parsleyPtr, parsley);
-	return _parse_doc(parsley_parse_file(parsley, STR2CSTR(name), input == ID2SYM(rb_intern("html"))), output);
+	return _parse_doc(parsley_parse_file(parsley, STR2CSTR(name), input == ID2SYM(rb_intern("html")), 1), output);
 }
 
 VALUE _parse_string(VALUE self, VALUE string, VALUE input, VALUE output) {
 	parsleyPtr parsley;
 	Data_Get_Struct(self, parsleyPtr, parsley);
 	char* cstr = STR2CSTR(string);
-	return _parse_doc(parsley_parse_string(parsley, cstr, strlen(cstr), input == ID2SYM(rb_intern("html"))), output);
+	return _parse_doc(parsley_parse_string(parsley, cstr, strlen(cstr), input == ID2SYM(rb_intern("html")), 1), output);
 }
 
 VALUE _parse_doc(parsedParsleyPtr ptr, VALUE type) {
