@@ -58,6 +58,8 @@ end
 myincl = %w[/usr/local/include /opt/local/include /usr/include]
 mylib = %w[/usr/local/lib /opt/local/lib /usr/lib]
 
+find_header('ruby.h', INCLUDEDIR, *myincl) or abort "need ruby.h"
+
 find_header('json/json.h', INCLUDEDIR, *myincl) or abort "need json/json.h"
 find_library('json', 'json_object_new_string', LIBDIR, *mylib) or abort "need libjson"
 
