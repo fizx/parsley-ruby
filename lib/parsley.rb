@@ -4,6 +4,16 @@ require "json"
 require "thread"
 
 class Parsley
+  
+  def self.user_agent=(agent)
+    @user_agent = agent
+    CParsley.set_user_agent(agent.to_s)
+  end
+  
+  def self.user_agent
+    @user_agent
+  end
+  
   def initialize(parsley, incl = "")
     if(parsley.is_a?(Hash))
       parsley = parsley.to_json 
@@ -17,23 +27,36 @@ class Parsley
   # Valid options:
   #
   # Requires one of:
-  # :file -- the input file path
+  # :file -- the input file path or url
   # :string -- the input string
   #
-  # And optionally:
-  # :input => [:xml, :html]
-  # :output => [:json, :xml, :ruby]
-  # :allow_empty -- If false, throws an exception if any value is empty.
-  #
-  # Defaults are :input => :html, :output => :ruby, :allow_empty => false
+  # And optionally (default is the first listed value):
+  # :input => [:html, :xml]
+  # :output => [:ruby, :json, :xml]
+  # :prune => [true, false]
+  # :base => "http://some/base/href"
+  # :allow_net => [true, false]
+  # :allow_local => [false, true]
   def parse(options = {})
-    options[:file] || options[:string] || throw("must specify what to parse")
-    options[:input] ||= :html
-    options[:output]||= :ruby
-    if options[:file]
-      @parsley.parse_file options[:file], options[:input], options[:output]
-    else
-      @parsley.parse_string options[:string], options[:input], options[:output]
-    end
+    options[:file] || options[:string] || (raise ParsleyError.new("must specify what to parse"))
+    
+    options[:is_file] = !!options[:file]
+    options[:has_base] = !!options[:base]
+    
+    options[:base] = options[:base].to_s
+    options[:file] = options[:file].to_s
+    options[:string] = options[:string].to_s
+    
+    options[:input]  ||= :html
+    options[:output] ||= :ruby
+    
+    options[:prune] = true unless options.has_key?(:prune)
+    options[:allow_net] = true unless options.has_key?(:allow_net)
+    
+    options[:prune] = !!options[:prune]
+    options[:allow_net] = !!options[:allow_net]
+    options[:allow_local] = !!options[:allow_local]
+    
+    @parsley.parse(options)
   end
 end

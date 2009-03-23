@@ -13,10 +13,8 @@
 #include <xml2json.h>
 
 VALUE _new(VALUE, VALUE, VALUE);
-VALUE _parse_file(VALUE, VALUE, VALUE, VALUE);
-VALUE _parse_string(VALUE, VALUE, VALUE, VALUE);
-VALUE _parse_doc(parsedParsleyPtr, VALUE);
-VALUE rubify_recurse(xmlNodePtr xml);
+VALUE _parse(VALUE, VALUE);
+VALUE _rb_set_user_agent(VALUE self, VALUE agent);
 VALUE c_parsley_err;
 VALUE c_parsley;
 
@@ -25,11 +23,12 @@ void Init_cparsley()
 	c_parsley = rb_define_class("CParsley", rb_cObject);
 	c_parsley_err = rb_define_class("ParsleyError", rb_eRuntimeError);
 	rb_define_singleton_method(c_parsley, "new", _new, 2);
-	rb_define_method(c_parsley, "parse_file", _parse_file, 3);
-	rb_define_method(c_parsley, "parse_string", _parse_string, 3);
+	rb_define_singleton_method(c_parsley, "set_user_agent", _rb_set_user_agent, 1);
+	rb_define_method(c_parsley, "parse", _parse, 1);
 }
 
-VALUE _new(VALUE self, VALUE parsley, VALUE incl){
+VALUE 
+_new(VALUE self, VALUE parsley, VALUE incl){
 	parsleyPtr ptr = parsley_compile(STR2CSTR(parsley), STR2CSTR(incl));
 	if(ptr->error != NULL) {
 	  rb_raise(c_parsley_err, ptr->error);
@@ -40,49 +39,15 @@ VALUE _new(VALUE self, VALUE parsley, VALUE incl){
  	return Data_Wrap_Struct(c_parsley, 0, parsley_free, ptr);
 }
 
-VALUE _parse_file(VALUE self, VALUE name, VALUE input, VALUE output){
-	parsleyPtr parsley;
-	Data_Get_Struct(self, parsleyPtr, parsley);
-	return _parse_doc(parsley_parse_file(parsley, STR2CSTR(name), input == ID2SYM(rb_intern("html")), 1), output);
+VALUE 
+_rb_set_user_agent(VALUE self, VALUE agent) {
+  parsley_set_user_agent(STR2CSTR(agent));
+  return Qtrue;
 }
 
-VALUE _parse_string(VALUE self, VALUE string, VALUE input, VALUE output) {
-	parsleyPtr parsley;
-	Data_Get_Struct(self, parsleyPtr, parsley);
-	char* cstr = STR2CSTR(string);
-	return _parse_doc(parsley_parse_string(parsley, cstr, strlen(cstr), input == ID2SYM(rb_intern("html")), 1), output);
-}
 
-VALUE _parse_doc(parsedParsleyPtr ptr, VALUE type) {
-	if(ptr->error != NULL || ptr->xml == NULL) {
-    if(ptr->error == NULL) ptr->error = strdup("Unknown parsley error");
-		rb_raise(c_parsley_err, ptr->error);
-    parsed_parsley_free(ptr);
-		return Qnil;
-	}
-	
-	VALUE output;
-	if(type == ID2SYM(rb_intern("json"))) {
-		struct json_object *json = xml2json(ptr->xml->children->children);
-		char* str = json_object_to_json_string(json);
-		output = rb_str_new2(str);
-		json_object_put(json);
-	} else if(type == ID2SYM(rb_intern("xml"))) {
-		char* str;
-		int size;
-		xmlDocDumpMemory(ptr->xml, &str, &size);
-		output = rb_str_new(str, size);
-	} else {
- 		output = rubify_recurse(ptr->xml->children->children);
-		if(output == NULL) output = Qnil; 
-	}
-	
-  parsed_parsley_free(ptr);
-  
-	return output;
-}
-
-VALUE rubify_recurse(xmlNodePtr xml) {
+static VALUE 
+rubify_recurse(xmlNodePtr xml) {
   if(xml == NULL) return NULL;
   xmlNodePtr child;
   VALUE obj = Qnil;
@@ -115,4 +80,57 @@ VALUE rubify_recurse(xmlNodePtr xml) {
   }
   // inspect(obj);
   return obj;
+}
+
+static VALUE 
+_parse_doc(parsedParsleyPtr ptr, VALUE type) {
+	if(ptr->error != NULL || ptr->xml == NULL) {
+    if(ptr->error == NULL) ptr->error = strdup("Unknown parsley error");
+		rb_raise(c_parsley_err, ptr->error);
+    parsed_parsley_free(ptr);
+		return Qnil;
+	}
+	
+	VALUE output;
+	if(type == ID2SYM(rb_intern("json"))) {
+		struct json_object *json = xml2json(ptr->xml->children->children);
+		char* str = json_object_to_json_string(json);
+		output = rb_str_new2(str);
+		json_object_put(json);
+	} else if(type == ID2SYM(rb_intern("xml"))) {
+		xmlChar* str;
+		int size;
+		xmlDocDumpMemory(ptr->xml, &str, &size);
+		output = rb_str_new(str, size);
+	} else {
+ 		output = rubify_recurse(ptr->xml->children->children);
+		if((void*)output == NULL) output = Qnil; 
+	}
+	
+  parsed_parsley_free(ptr);
+  
+	return output;
+}
+
+#define OPT(A) rb_hash_aref(options, ID2SYM(rb_intern(A)))
+#define OPT_BOOL(A) (OPT(A) != Qnil && OPT(A) != Qfalse)
+#define OPT_MATCH(A, B) (rb_hash_aref(options, ID2SYM(rb_intern(A))) == ID2SYM(rb_intern(B)))
+
+VALUE _parse(VALUE self, VALUE options){
+	parsleyPtr parsley;
+	Data_Get_Struct(self, parsleyPtr, parsley);
+  int flags = 0;
+  char *base = NULL;
+  if(OPT_MATCH("input", "html"))    flags |= PARSLEY_OPTIONS_HTML;
+  if(OPT_BOOL("prune"))             flags |= PARSLEY_OPTIONS_PRUNE;
+  if(OPT_BOOL("allow_net"))         flags |= PARSLEY_OPTIONS_ALLOW_NET;
+  if(OPT_BOOL("allow_local"))       flags |= PARSLEY_OPTIONS_ALLOW_LOCAL;
+  if(OPT_BOOL("has_base"))          base = STR2CSTR(OPT("base"));
+  
+  if(OPT_BOOL("is_file")) {
+    return _parse_doc(parsley_parse_file(parsley, STR2CSTR(OPT("file")), flags), OPT("output"));
+  } else {
+    char * str = STR2CSTR(OPT("string"));
+    return _parse_doc(parsley_parse_string(parsley, str, strlen(str), base, flags), OPT("output"));
+  }
 }
