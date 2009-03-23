@@ -52,6 +52,7 @@ class Parsley
     
     options[:prune] = true unless options.has_key?(:prune)
     options[:allow_net] = true unless options.has_key?(:allow_net)
+    options[:allow_local] = true unless options.has_key?(:allow_local)
     
     options[:prune] = !!options[:prune]
     options[:allow_net] = !!options[:allow_net]
