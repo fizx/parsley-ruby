@@ -36,7 +36,7 @@ class Parsley
   # :prune => [true, false]
   # :base => "http://some/base/href"
   # :allow_net => [true, false]
-  # :allow_local => [false, true]
+  # :allow_local => [true, false]
   def parse(options = {})
     options[:file] || options[:string] || (raise ParsleyError.new("must specify what to parse"))
     
