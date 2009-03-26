@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "parsley-ruby"
-  s.version  = "0.3.0"
+  s.version  = "0.3.1"
   s.date     = "2009-03-23"
   s.summary  = "Ruby binding for parsley"
   s.email    = "kyle@kylemaxwell.com"

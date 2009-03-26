@@ -123,6 +123,7 @@ VALUE _parse(VALUE self, VALUE options){
   char *base = NULL;
   if(OPT_MATCH("input", "html"))    flags |= PARSLEY_OPTIONS_HTML;
   if(OPT_BOOL("prune"))             flags |= PARSLEY_OPTIONS_PRUNE;
+  if(OPT_BOOL("collate"))           flags |= PARSLEY_OPTIONS_COLLATE;
   if(OPT_BOOL("allow_net"))         flags |= PARSLEY_OPTIONS_ALLOW_NET;
   if(OPT_BOOL("allow_local"))       flags |= PARSLEY_OPTIONS_ALLOW_LOCAL;
   if(OPT_BOOL("has_base"))          base = STR2CSTR(OPT("base"));

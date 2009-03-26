@@ -34,6 +34,7 @@ class Parsley
   # :input => [:html, :xml]
   # :output => [:ruby, :json, :xml]
   # :prune => [true, false]
+  # :collate => [true, false]
   # :base => "http://some/base/href"
   # :allow_net => [true, false]
   # :allow_local => [true, false]
@@ -50,10 +51,12 @@ class Parsley
     options[:input]  ||= :html
     options[:output] ||= :ruby
     
+    options[:collate] = true unless options.has_key?(:collate)
     options[:prune] = true unless options.has_key?(:prune)
     options[:allow_net] = true unless options.has_key?(:allow_net)
     options[:allow_local] = true unless options.has_key?(:allow_local)
     
+    options[:collate] = !!options[:collate]
     options[:prune] = !!options[:prune]
     options[:allow_net] = !!options[:allow_net]
     options[:allow_local] = !!options[:allow_local]
