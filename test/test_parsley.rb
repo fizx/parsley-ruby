@@ -14,6 +14,20 @@ class TestParsley < Test::Unit::TestCase
     assert_equal "/c/sf/shopping", out["categories"][0]["href"]
   end
   
+  def test_parsley_should_raise_if_value_syntax_error
+    assert_raises(ParsleyError) do
+      Parsley.new({"foo" => nil})
+    end
+    
+    assert_raises(ParsleyError) do
+      Parsley.new({"foo" => ""})
+    end
+    
+    assert_raises(ParsleyError) do
+      Parsley.new({"foo" => "<<<<<<<<<<<"})
+    end
+  end
+  
   def test_yelp_xml
     @parsley = Parsley.new(File.read(@let))
     out = @parsley.parse(:file => @home, :output => :xml)
@@ -38,7 +52,7 @@ class TestParsley < Test::Unit::TestCase
   
   def test_xml
     @parsley = Parsley.new("hi" => "h1")
-    xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parselets.com/json\"><hi position=\"63\">Nick's Crispy Tacos</hi></parsley:root>\n"
+    xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parselets.com/json\"><hi position=\"105\">Nick's Crispy Tacos</hi></parsley:root>\n"
     assert_equal(xml, @parsley.parse(:file => @page, :output => :xml))
   end
   
