@@ -52,7 +52,7 @@ class TestParsley < Test::Unit::TestCase
   
   def test_xml
     @parsley = Parsley.new("hi" => "h1")
-    xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parselets.com/json\"><hi position=\"105\">Nick's Crispy Tacos</hi></parsley:root>\n"
+    xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parselets.com/json\"><hi position=\"63\">Nick's Crispy Tacos</hi></parsley:root>\n"
     assert_equal(xml, @parsley.parse(:file => @page, :output => :xml))
   end
 
