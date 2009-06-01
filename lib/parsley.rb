@@ -16,7 +16,7 @@ class Parsley
   
   def initialize(parsley, incl = "")
     if(parsley.is_a?(Hash))
-      parsley = parsley.to_json 
+      parsley = recursive_stringify(parsley).to_json 
     end
     @@mutex ||= Mutex.new
     @@mutex.synchronize do
@@ -65,4 +65,20 @@ class Parsley
     
     @parsley.parse(options)
   end
+  private
+  
+  def recursive_stringify(obj)
+    case obj
+    when Hash
+      obj.inject({}) do |memo, (k, v)|
+        memo[k.to_s] = recursive_stringify(v)
+        memo
+      end
+    when Array
+      obj.map{|e| recursive_stringify(e) }
+    else
+      obj.to_s
+    end
+  end
+  
 end
