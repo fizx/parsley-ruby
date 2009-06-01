@@ -41,6 +41,21 @@ class TestParsley < Test::Unit::TestCase
     xml = "<?xml version=\"1.0\"?>\n<parsley:root xmlns:parsley=\"http://parselets.com/json\"><hi position=\"63\">Nick's Crispy Tacos</hi></parsley:root>\n"
     assert_equal(xml, @parsley.parse(:file => @page, :output => :xml))
   end
+
+  def test_sgwrap
+    @parsley = Parsley.new("hi" => "p sg_wrap")
+    html = "<p><b>hi</b>world</p>"
+    assert_equal({"hi" => "world"}, @parsley.parse(:string => html, :sgwrap => true))
+  end
+  
+  def test_sgwrap_off
+    @parsley = Parsley.new("hi" => "p sg_wrap")
+    html = "<p><b>hi</b>world</p>"
+    assert_raises(ParsleyError) do
+      @parsley.parse(:string => html, :sgwrap => false)
+    end
+  end
+
   
   def test_json
     @parsley = Parsley.new("hi" => "h1")

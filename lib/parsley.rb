@@ -34,6 +34,7 @@ class Parsley
   # :input => [:html, :xml]
   # :output => [:ruby, :json, :xml]
   # :prune => [true, false]
+  # :sgwrap => [false, true]
   # :collate => [true, false]
   # :base => "http://some/base/href"
   # :allow_net => [true, false]
@@ -41,6 +42,7 @@ class Parsley
   def parse(options = {})
     options[:file] || options[:string] || (raise ParsleyError.new("must specify what to parse"))
     
+    options[:sgwrap] = !!options[:sgwrap]
     options[:is_file] = !!options[:file]
     options[:has_base] = !!options[:base]
     

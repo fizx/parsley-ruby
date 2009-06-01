@@ -126,6 +126,7 @@ VALUE _parse(VALUE self, VALUE options){
   if(OPT_BOOL("collate"))           flags |= PARSLEY_OPTIONS_COLLATE;
   if(OPT_BOOL("allow_net"))         flags |= PARSLEY_OPTIONS_ALLOW_NET;
   if(OPT_BOOL("allow_local"))       flags |= PARSLEY_OPTIONS_ALLOW_LOCAL;
+  if(OPT_BOOL("sgwrap"))            flags |= PARSLEY_OPTIONS_SGWRAP;
   if(OPT_BOOL("has_base"))          base = STR2CSTR(OPT("base"));
   
   // printf("prune: %d\nallow_net: %d\nallow_local: %d\nhas_base: %d\nflags: %d\n", OPT_BOOL("prune"), OPT_BOOL("allow_net"), OPT_BOOL("allow_local"), OPT_BOOL("has_base"), flags);
