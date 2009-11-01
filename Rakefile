@@ -10,7 +10,7 @@ begin
     gem.email = "kyle@kylemaxwell.com"
     gem.homepage = "http://github.com/fizx/parsley-ruby"
     gem.authors = ["Kyle Maxwell"]
-    gem.add_development_dependency "thoughtbot-shoulda"
+    gem.add_dependency("json", ["> 0.0.0"])
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
