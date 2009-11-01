@@ -13,11 +13,14 @@ Download Parsley from http://github.com/fizx/parsley/tree/master following the i
 From source:
   sudo rake install
 
-From GitHub:
+From GitHub: DEPRECATED!
+
+From GemCutter
+
   Run the following if you haven't already:
-  gem sources -a http://gems.github.com
+  gem sources -a http://gemcutter.org
   Install the gem:
-  sudo gem install fizx-parsley-ruby
+  sudo gem install parsley-ruby
 
 PARSLETS.COM INTEGRATION
 
