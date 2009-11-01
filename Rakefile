@@ -11,7 +11,8 @@ begin
     gem.homepage = "http://github.com/fizx/parsley-ruby"
     gem.authors = ["Kyle Maxwell"]
     gem.add_dependency("json", ["> 0.0.0"])
-  end
+    gem.require_paths = ["lib", "ext"]
+    gem.extensions = "ext/extconf.rb"  end
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
