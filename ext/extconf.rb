@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-ENV["ARCHFLAGS"] = "-arch #{`uname -p` =~ /powerpc/ ? 'ppc' : 'i386'}"
+ENV["ARCHFLAGS"] ||= "-arch #{`uname -p` =~ /powerpc/ ? 'ppc' : 'i386'}"
 
 require 'mkmf'
 

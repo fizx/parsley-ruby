@@ -1,0 +1,3 @@
+0.4.3
+- Added CHANGELOG
+- Only assigning ARCHFLAGS if not already specified.
