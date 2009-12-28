@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{parsley-ruby}
-  s.version = "0.4.2"
+  s.version = "0.4.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kyle Maxwell"]
-  s.date = %q{2009-11-01}
+  s.date = %q{2009-12-28}
   s.description = %q{XML/HTML Parser}
   s.email = %q{kyle@kylemaxwell.com}
   s.extensions = ["ext/extconf.rb"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".gitignore",
+     "CHANGELOG",
      "README",
      "Rakefile",
      "VERSION",
