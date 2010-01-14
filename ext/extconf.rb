@@ -1,69 +1,28 @@
 #!/usr/bin/env ruby
-ENV["ARCHFLAGS"] ||= "-arch #{`uname -p` =~ /powerpc/ ? 'ppc' : 'i386'}"
+# ENV["ARCHFLAGS"] ||= "-arch #{`uname -p` =~ /powerpc/ ? 'ppc' : 'i386'}"
 
 require 'mkmf'
 
-ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+EXT = File.expand_path(File.dirname(__FILE__))
+
 LIBDIR = Config::CONFIG['libdir']
 INCLUDEDIR = Config::CONFIG['includedir']
 
-$CFLAGS << " #{ENV["CFLAGS"]}"
-if Config::CONFIG['target_os'] == 'mingw32'
-  $CFLAGS << " -DXP_WIN -DXP_WIN32"
-else
-  $CFLAGS << " -g -DXP_UNIX"
-end
+system "cd #{EXT}/parsley && ./configure && make"
 
+$CFLAGS << " -g -DXP_UNIX"
 $CFLAGS << " -O3 -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline"
 
-if Config::CONFIG['target_os'] == 'mingw32'
-  find_library('xml2', 'xmlParseDoc',
-               File.join(ROOT, 'cross', 'libxml2-2.7.2.win32', 'bin'))
-  find_library('xslt', 'xsltParseStylesheetDoc',
-               File.join(ROOT, 'cross', 'libxslt-1.1.24.win32', 'bin'))
-else
-  find_library('xml2', 'xmlParseDoc', LIBDIR)
-  find_library('xslt', 'xsltParseStylesheetDoc', LIBDIR)
-end
+find_library('xml2', 'xmlParseDoc', LIBDIR) or abort "need -lxml2"
+find_library('xslt', 'xsltParseStylesheetDoc', LIBDIR) or abort "need -lxslt"
+find_header('libxml/xmlversion.h', File.join(INCLUDEDIR, "libxml2")) or abort "need libxml headers"
+find_header('libxslt/xslt.h', INCLUDEDIR) or abort "need libxslt headers"
+find_header('ruby.h', INCLUDEDIR) or abort "need ruby.h"
 
+find_header("#{EXT}/parsley/json-c-0.9/json.h", INCLUDEDIR) or abort "need json/json.h"
+find_library("json", "json_object_new_string", "#{EXT}/parsley/json-c-0.9/") or abort "need libjson"
 
-if Config::CONFIG['target_os'] == 'mingw32'
-  header = File.join(ROOT, 'cross', 'libxml2-2.7.2.win32', 'include')
-  unless find_header('libxml/xmlversion.h', header)
-    abort "need libxml"
-  end
-
-  header = File.join(ROOT, 'cross', 'libxslt-1.1.24.win32', 'include')
-  unless find_header('libxslt/libxslt.h', header)
-    abort "need libxslt"
-  end
-
-  header = File.join(ROOT, 'cross', 'iconv-1.9.2.win32', 'include')
-  unless find_header('iconv.h', header)
-    abort "need iconv"
-  end
-else
-  unless find_header('libxml/xmlversion.h',
-                     File.join(INCLUDEDIR, "libxml2"), '/usr/include/libxml2'
-                    )
-    abort "need libxml"
-  end
-  unless find_header('libxslt/xslt.h', INCLUDEDIR, '/usr/include')
-    abort "need libxslt"
-  end
-
-  version = try_constant('LIBXML_VERSION', 'libxml/xmlversion.h')
-end
-
-myincl = %w[/usr/local/include /opt/local/include /usr/include]
-mylib = %w[/usr/local/lib /opt/local/lib /usr/lib]
-
-find_header('ruby.h', INCLUDEDIR, *myincl) or abort "need ruby.h"
-
-find_header('json/json.h', INCLUDEDIR, *myincl) or abort "need json/json.h"
-find_library('json', 'json_object_new_string', LIBDIR, *mylib) or abort "need libjson"
-
-find_header('parsley.h', INCLUDEDIR, *myincl) or abort "need parsley.h"
-find_library('parsley', 'parsley_compile', LIBDIR, *mylib) or abort "need libparsley"
+find_header("#{EXT}/parsley/parsley.h", INCLUDEDIR) or abort "need parsley.h"
+find_library('parsley', 'parsley_compile', "#{EXT}/parsley/") or abort "need libparsley"
 
 create_makefile('cparsley')
