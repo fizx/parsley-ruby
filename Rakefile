@@ -4,7 +4,7 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "parsley-ruby"
+    gem.name = "edge-parsley-ruby"
     gem.summary = "Ruby binding for parsley"
     gem.description = "XML/HTML Parser"
     gem.email = "kyle@kylemaxwell.com"
