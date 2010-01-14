@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{parsley-ruby}
-  s.version = "0.4.3"
+  s.version = "0.4.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kyle Maxwell"]
-  s.date = %q{2009-12-28}
+  s.date = %q{2010-01-14}
   s.description = %q{XML/HTML Parser}
   s.email = %q{kyle@kylemaxwell.com}
   s.extensions = ["ext/extconf.rb"]
