@@ -24,3 +24,4 @@ ext/Makefile
 ext/conftest.dSYM/
 work
 ext/mkmf.log
+pkg
