@@ -18,6 +18,12 @@ VALUE _rb_set_user_agent(VALUE self, VALUE agent);
 VALUE c_parsley_err;
 VALUE c_parsley;
 
+#ifndef STR2CSTR
+char *STR2CSTR(VALUE v) {
+  return StringValuePtr(v);
+}
+#endif
+
 void Init_cparsley()
 {
 	c_parsley = rb_define_class("CParsley", rb_cObject);
