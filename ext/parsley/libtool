@@ -2,7 +2,7 @@
 
 # libtool - Provide generalized library-building support services.
 # Generated automatically by config.status (parsleyc) 1.0
-# Libtool was configured on host kyles-macbook.local:
+# Libtool was configured on host blah.local:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -56,16 +56,16 @@ fast_install=needless
 
 # The host system.
 host_alias=
-host=i386-apple-darwin10.2.0
-host_os=darwin10.2.0
+host=i386-apple-darwin10.6.0
+host_os=darwin10.6.0
 
 # The build system.
 build_alias=
-build=i386-apple-darwin10.2.0
-build_os=darwin10.2.0
+build=i386-apple-darwin10.6.0
+build_os=darwin10.6.0
 
 # A sed program that does not truncate output.
-SED="/opt/local/bin/gsed"
+SED="/usr/bin/sed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"
@@ -302,8 +302,8 @@ old_archive_from_new_cmds=""
 old_archive_from_expsyms_cmds=""
 
 # Commands used to build a shared archive.
-archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module~\$DSYMUTIL \$lib || :"
-archive_expsym_cmds="sed 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring \$single_module \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~\$DSYMUTIL \$lib || :"
+archive_cmds="\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring ~\$DSYMUTIL \$lib || :"
+archive_expsym_cmds="sed 's,^,_,' < \$export_symbols > \$output_objdir/\${libname}-symbols.expsym~\$CC -dynamiclib \$allow_undefined_flag -o \$lib \$libobjs \$deplibs \$compiler_flags -install_name \$rpath/\$soname \$verstring  \${wl}-exported_symbols_list,\$output_objdir/\${libname}-symbols.expsym~\$DSYMUTIL \$lib || :"
 
 # Commands used to build a loadable module if different from building
 # a shared archive.

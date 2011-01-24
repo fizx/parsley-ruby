@@ -14,6 +14,7 @@ class TestParsley < Test::Unit::TestCase
       <html>
       <body>
         <h1 class="iCIMS_Header_JobTitle">CEO</h1>
+        <h2 class="temperature">28ºF</h2>
       </body>
       </html>
     HTML
@@ -21,6 +22,7 @@ class TestParsley < Test::Unit::TestCase
     struct = {
       'jobs' => [{
         'title'         => ".iCIMS_Header_JobTitle",
+        'temperature'   => ".temperature",
         'description?'  => "blah",
         'location?'     => "blah",
         'experience?'   => "blah",
@@ -30,6 +32,7 @@ class TestParsley < Test::Unit::TestCase
     parselet = Parsley.new(struct)
     result = parselet.parse(:string => simple_html)
     assert_equal "CEO", result['jobs'].first['title']
+    assert_equal "28ºF", result['jobs'].first['temperature']
     assert result['jobs'].first['description'].nil?
   end
   # 
