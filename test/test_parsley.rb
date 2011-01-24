@@ -1,5 +1,6 @@
+#encoding: UTF-8
 require "test/unit"
-require File.dirname(__FILE__) + "/../lib/parsley"
+require File.expand_path(File.dirname(__FILE__) + "/../lib/parsley")
 
 class TestParsley < Test::Unit::TestCase
   def setup

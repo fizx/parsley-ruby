@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + "/../ext/cparsley"
+require File.expand_path(File.dirname(__FILE__) + "/../ext/cparsley")
 require "rubygems"
 require "json"
 require "thread"
