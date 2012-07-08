@@ -18,6 +18,12 @@ VALUE _rb_set_user_agent(VALUE self, VALUE agent);
 VALUE c_parsley_err;
 VALUE c_parsley;
 
+#ifndef STR2CSTR
+char *STR2CSTR(VALUE v) {
+  return StringValuePtr(v);
+}
+#endif
+
 void Init_cparsley()
 {
 	c_parsley = rb_define_class("CParsley", rb_cObject);
@@ -30,6 +36,7 @@ void Init_cparsley()
 VALUE 
 _new(VALUE self, VALUE parsley, VALUE incl){
 	parsleyPtr ptr = parsley_compile(STR2CSTR(parsley), STR2CSTR(incl));
+
 	if(ptr->error != NULL) {
 	  rb_raise(c_parsley_err, ptr->error);
     parsley_free(ptr);
@@ -47,7 +54,7 @@ _rb_set_user_agent(VALUE self, VALUE agent) {
 
 
 static VALUE 
-rubify_recurse(xmlNodePtr xml) {
+rubify_recurse(xmlNodePtr xml, int encoding) {
   if(xml == NULL) return NULL;
   xmlNodePtr child;
   VALUE obj = Qnil;
@@ -59,14 +66,16 @@ rubify_recurse(xmlNodePtr xml) {
         child = xml;
         obj = rb_hash_new();
         while(child != NULL) {
-          rb_hash_aset(obj, rb_str_new2(child->name), rubify_recurse(child->children));
+          VALUE key = rb_str_new2(child->name);
+          rb_enc_associate_index(key, encoding);
+          rb_hash_aset(obj, key, rubify_recurse(child->children, encoding));
           child = child->next;
         }
       } else if(!strcmp(xml->ns->prefix, "parsley")) {
         if(!strcmp(xml->name, "groups")) {
           obj = rb_ary_new();
           while(child != NULL) {
-            rb_ary_push(obj, rubify_recurse(child->children));
+            rb_ary_push(obj, rubify_recurse(child->children, encoding));
             child = child->next;
           }          
         } else if(!strcmp(xml->name, "group")) {
@@ -76,6 +85,7 @@ rubify_recurse(xmlNodePtr xml) {
       break;
     case XML_TEXT_NODE:
       obj = rb_str_new2(xml->content);
+      rb_enc_associate_index(obj, encoding);
       break;
   }
   // inspect(obj);
@@ -83,7 +93,7 @@ rubify_recurse(xmlNodePtr xml) {
 }
 
 static VALUE 
-_parse_doc(parsedParsleyPtr ptr, VALUE type) {
+_parse_doc(parsedParsleyPtr ptr, VALUE type, int encoding) {
 	if(ptr->error != NULL || ptr->xml == NULL) {
     if(ptr->error == NULL) ptr->error = strdup("Unknown parsley error");
 		rb_raise(c_parsley_err, ptr->error);
@@ -96,14 +106,16 @@ _parse_doc(parsedParsleyPtr ptr, VALUE type) {
 		struct json_object *json = xml2json(ptr->xml->children->children);
 		char* str = json_object_to_json_string(json);
 		output = rb_str_new2(str);
+    rb_enc_associate_index(output, encoding);
 		json_object_put(json);
 	} else if(type == ID2SYM(rb_intern("xml"))) {
 		xmlChar* str;
 		int size;
 		xmlDocDumpMemory(ptr->xml, &str, &size);
 		output = rb_str_new(str, size);
+    rb_enc_associate_index(output, encoding);
 	} else {
- 		output = rubify_recurse(ptr->xml->children->children);
+ 		output = rubify_recurse(ptr->xml->children->children, encoding);
 		if((void*)output == NULL) output = Qnil; 
 	}
 	
@@ -119,7 +131,7 @@ _parse_doc(parsedParsleyPtr ptr, VALUE type) {
 VALUE _parse(VALUE self, VALUE options){
 	parsleyPtr parsley;
 	Data_Get_Struct(self, parsleyPtr, parsley);
-  int flags = 0;
+  int flags = PARSLEY_OPTIONS_FORCE_UTF8;
   char *base = NULL;
   if(OPT_MATCH("input", "html"))    flags |= PARSLEY_OPTIONS_HTML;
   if(OPT_BOOL("prune"))             flags |= PARSLEY_OPTIONS_PRUNE;
@@ -132,9 +144,9 @@ VALUE _parse(VALUE self, VALUE options){
   // printf("prune: %d\nallow_net: %d\nallow_local: %d\nhas_base: %d\nflags: %d\n", OPT_BOOL("prune"), OPT_BOOL("allow_net"), OPT_BOOL("allow_local"), OPT_BOOL("has_base"), flags);
   
   if(OPT_BOOL("is_file")) {
-    return _parse_doc(parsley_parse_file(parsley, STR2CSTR(OPT("file")), flags), OPT("output"));
+    return _parse_doc(parsley_parse_file(parsley, STR2CSTR(OPT("file")), flags), OPT("output"), rb_enc_find_index("UTF-8"));
   } else {
     char * str = STR2CSTR(OPT("string"));
-    return _parse_doc(parsley_parse_string(parsley, str, strlen(str), base, flags), OPT("output"));
+    return _parse_doc(parsley_parse_string(parsley, str, strlen(str), base, flags), OPT("output"), rb_enc_find_index("UTF-8"));
   }
 }
